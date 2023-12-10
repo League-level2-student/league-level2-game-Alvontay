@@ -1,4 +1,4 @@
-package com.alvontaymaher;
+package game;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,7 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class GamePanel extends JPanel implements KeyListener {
+public class GamePanel extends JPanel implements KeyListener, ActionListener {
 
 	static final int WIDTH = 400;
 	static final int HEIGHT = 400;
@@ -26,6 +26,8 @@ public class GamePanel extends JPanel implements KeyListener {
 	Random r = new Random();
 	JFrame frame = new JFrame("2048");
 	int[] empty = new int[2];
+	boolean tileMoved;
+	Timer timer = new Timer(1000/60, this);
 	
 	public GamePanel() {
 
@@ -36,6 +38,7 @@ public class GamePanel extends JPanel implements KeyListener {
 		frame.addKeyListener(this);
 		frame.setDefaultCloseOperation(3);
 		this.setBackground(Color.white);
+		timer.start();
 		
 		
 		for(int i = 0; i < 4; i++) {
@@ -95,8 +98,6 @@ public class GamePanel extends JPanel implements KeyListener {
 	@Override
 	public void paintComponent(Graphics g) { 
 
-		
-		
 		for(int i = 0; i < 4; i++) {
 			for(int j = 0; j < 4; j++) {
 				try {
@@ -107,83 +108,175 @@ public class GamePanel extends JPanel implements KeyListener {
 			}
 		}
 		
+		if (tileMoved) {
+			newTile();	
+			tileMoved = false;
+		}
 
 	}
 
 	private void move(int direction) {
 
-		
-		
-//		if space (direction) is empty move there
-//		if space (direction) is another tile of same value then combine
-		
 		int r, c;
 		
-//		if up start with row at 0, if down start with row at 3 ect
-//		switch(direction) {
-//			case UP: row = 1;
-//			break;
-//			case DOWN: row = 3;
-//			break;
-//			case LEFT: col = 1;
-//			break;
-//			case RIGHT: col = 3;
-//			break;
-//		}
+		tileMoved = false;
 		
-		for(r = 0; r < 4; r++) {
-			for(c = 0; c < 4; c++) {
-				if (tiles[r][c].getValue() != 0) {
-					moveUp(r,c);
-					}
-				}
+		switch(direction) {
+			case UP: 
 				
-			}
+				for(r = 0; r < 4; r++) {
+					for(c = 0; c < 4; c++) {
+						if (tiles[r][c].getValue() != 0) {
+								moveUp(r,c);
+						}
+					}	
+				};
+				
+			break;
+			case DOWN: 
+				
+				for(r = 3; r >= 0; r--) {
+					for(c = 0; c < 4; c++) {
+						if (tiles[r][c].getValue() != 0) {
+								moveDown(r,c);
+						}
+					}	
+				};
+				
+			break;
+			case LEFT: 
+				
+				for(c = 0; c < 4; c++) {
+					for(r = 0; r < 4; r++) {
+						if (tiles[r][c].getValue() != 0) {
+							moveLeft(r,c);
+						}
+					}
+				};
+				
+			break;
+			case RIGHT: 
+				
+				for(c = 3; c >= 0; c--) {
+					for(r = 0; r < 4; r++) {
+						if (tiles[r][c].getValue() != 0) {
+							moveRight(r,c);
+						}
+					}
+				};
+				
+			break;
+		}
+
 	}
 
 	private void moveUp(int r, int c) {
+		
 		int row = r;
 		
 		while (row > 0 && tiles[row-1][c].getValue() == 0) {
 			row--;
 		}
 		
-		tiles[row][c].setValue(tiles[r][c].getValue());
-		tiles[r][c].setValue(0);
+		int tempValue = tiles[r][c].getValue();
+		
+		if (row != r) {
+			tiles[r][c].setValue(0);
+			tiles[row][c].setValue(tempValue);	
+		} 
 		
 		if (row > 0 && tiles[row-1][c].getValue() == tiles[row][c].getValue()) {
 			tiles[row-1][c].setValue(tiles[row][c].getValue()*2);
 			tiles[row][c].setValue(0);
+		}
+		
+		if (r != row) {
+			tileMoved = true;
 		}
 		
 	}
 	
 	private void moveDown(int r, int c) {
+		
 		int row = r;
 		
-		while (row > 0 && tiles[row-1][c].getValue() == 0) {
-			row--;
+		while (row < 3 && tiles[row+1][c].getValue() == 0) {
+			row++;
 		}
 		
-		tiles[row][c].setValue(tiles[r][c].getValue());
-		tiles[r][c].setValue(0);
+		int tempValue = tiles[r][c].getValue();
 		
-		if (row > 0 && tiles[row-1][c].getValue() == tiles[row][c].getValue()) {
-			tiles[row-1][c].setValue(tiles[row][c].getValue()*2);
+		if (row != r) {
+			tiles[r][c].setValue(0);
+			tiles[row][c].setValue(tempValue);	
+		} 
+		
+		if (row < 3 && tiles[row+1][c].getValue() == tiles[row][c].getValue()) {
+			tiles[row+1][c].setValue(tiles[row][c].getValue()*2);
 			tiles[row][c].setValue(0);
 		}
 		
-	}
-	
-	private void moveRight() {
+		if (r != row) {
+			tileMoved = true;
+		}
 		
 	}
 	
-	private void moveLeft() {
+	private void moveLeft(int r, int c) {
+		
+		int col = c;
+		
+		while (col > 0 && tiles[r][col-1].getValue() == 0) {
+			col--;
+		}
+		
+		int tempValue = tiles[r][c].getValue();
+		
+		if (col != c) {
+			tiles[r][c].setValue(0);
+			tiles[r][col].setValue(tempValue);	
+		} 
+		
+		if (col > 0 && tiles[r][col-1].getValue() == tiles[r][col].getValue()) {
+			tiles[r][col-1].setValue(tiles[r][col].getValue()*2);
+			tiles[r][col].setValue(0);
+		}
+		
+		if (c != col) {
+			tileMoved = true;
+		}
 		
 	}
 	
-	@Override
+	private void moveRight(int r, int c) {
+		
+		int col = c;
+		
+		while (col < 3 && tiles[r][col+1].getValue() == 0) {
+			col++;
+		}
+		
+		int tempValue = tiles[r][c].getValue();
+		
+		
+		if (col != c) {
+			tiles[r][c].setValue(0);
+			tiles[r][col].setValue(tempValue);	
+		} 
+		
+				
+		
+		if (col < 3 && tiles[r][col+1].getValue() == tiles[r][col].getValue()) {
+			tiles[r][col+1].setValue(tiles[r][col].getValue()*2);
+			tiles[r][col].setValue(0);
+		}
+		
+		if (c != col) {
+			tileMoved = true;
+		}
+		
+	}
+	
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 
@@ -215,11 +308,13 @@ public class GamePanel extends JPanel implements KeyListener {
 		if (key == KeyEvent.VK_RIGHT) {
 			move(RIGHT);
 		}
-		
-//		newTile();
-		repaint();
 
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		repaint();
+	}
 
 }

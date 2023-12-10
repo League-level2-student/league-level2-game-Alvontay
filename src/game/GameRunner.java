@@ -1,4 +1,4 @@
-package com.alvontaymaher;
+package game;
 
 public class GameRunner {
 
