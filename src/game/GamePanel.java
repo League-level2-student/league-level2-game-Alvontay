@@ -126,7 +126,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				for(r = 1; r < 4; r++) {
 					for(c = 0; c < 4; c++) {
 						if (tiles[r][c].getValue() != 0) {
-							moveUp(r,c);
+//							moveUp(r,c);
+							moveVertical(r,c,(-1));
 						}
 					}	
 				};
@@ -137,7 +138,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				for(r = 2; r >= 0; r--) {
 					for(c = 0; c < 4; c++) {
 						if (tiles[r][c].getValue() != 0) {
-							moveDown(r,c);
+//							moveDown(r,c);
+							moveVertical(r,c,1);
 						}
 					}	
 				};
@@ -148,7 +150,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				for(c = 1; c < 4; c++) {
 					for(r = 0; r < 4; r++) {
 						if (tiles[r][c].getValue() != 0) {
-							moveLeft(r,c);
+//							moveLeft(r,c);
+							moveHorizontal(r,c,-1);
 						}
 					}
 				};
@@ -159,7 +162,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				for(c = 2; c >= 0; c--) {
 					for(r = 0; r < 4; r++) {
 						if (tiles[r][c].getValue() != 0) {
-							moveRight(r,c);
+//							moveRight(r,c);
+							moveHorizontal(r,c,1);
 						}
 					}
 				};
@@ -168,7 +172,62 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		}
 
 	}
-
+	
+	private void moveVertical(int r, int c, int dir) {
+		
+		int moveRow = r;
+		
+		try {
+			while (tiles[moveRow + dir][c].getValue() == 0) {
+				moveRow += dir;
+			}
+			
+			if (tiles[r][c].getValue() == tiles[moveRow + dir][c].getValue()) {
+				moveRow += dir;
+			}
+		} catch (Exception e) {
+//			e.printStackTrace();
+		}
+		
+		
+		
+		if (!combine(r, c, moveRow - r, 0)) {
+			
+			if (moveRow != r) {
+				tiles[moveRow][c].setValue(tiles[r][c].getValue());	
+				tiles[r][c].setValue(0);
+				tileMoved = true;
+			} 
+		} 
+	}
+	
+	private void moveHorizontal(int r, int c, int dir) {
+		int moveCol = c;
+		
+		try {
+			while (tiles[r][moveCol + dir].getValue() == 0) {
+				moveCol += dir;
+			}
+			
+			if (tiles[r][c].getValue() == tiles[r][moveCol + dir].getValue()) {
+				moveCol += dir;
+			}
+		} catch (Exception e) {
+//			e.printStackTrace();
+		}
+		
+		
+		
+		if (!combine(r, c, 0, moveCol - c)) {
+			
+			if (moveCol != c) {
+				tiles[r][moveCol].setValue(tiles[r][c].getValue());	
+				tiles[r][c].setValue(0);
+				tileMoved = true;
+			} 
+		} 
+	}
+	
 	private void moveUp(int r, int c) {
 		
 		int moveRow = r;
