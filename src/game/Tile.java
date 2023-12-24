@@ -10,19 +10,19 @@ public class Tile {
 	
 	protected int row, col, value;
 	public int x, y;
+	
 	public static BufferedImage[] images = new BufferedImage[5];
 	public static boolean needImage = true;
 	public static boolean gotImage = false;	
 	
 	static {
-		
+		loadImages();
 	}
 	
 	public Tile(int row, int col, int value) {
 		y = row * 100;
 		x = col * 100;
 		this.value = value;
-		loadImages();
 	}
 	
 	
@@ -30,7 +30,7 @@ public class Tile {
 	public void draw(Graphics g) {
 	
 		switch(value) {
-			case 0: g.setColor(Color.white);
+			case 0: g.setColor(new Color(20,30,40));
 					g.fillRect(x, y, 100, 100);
 			break;
 			case 2: g.drawImage(images[0], x, y, 100, 100, null);
@@ -56,8 +56,6 @@ public class Tile {
 	}
 	
 	static void loadImages() {
-		
-		System.out.println(images.length);
 		
 	    if (needImage) {
 	        try {
