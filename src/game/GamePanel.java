@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,17 +30,38 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 	boolean tileMoved;
 	Timer timer = new Timer(1000/60, this);
 	
-	public GamePanel() {
-
+//	tests constructor
+	public GamePanel(String hi) {
 		frame.add(this);
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-//		frame.setBackground(new Color(50,50,70));	
 		frame.setVisible(true);
 		frame.addKeyListener(this);
 		frame.setDefaultCloseOperation(3);
 		this.setBackground(Color.black);
 		timer.start();
 		
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+
+				Tile tile = new Tile(i, j, 0);
+				tiles[i][j] = tile;
+
+			}
+		}
+		
+		frame.pack();
+		repaint();
+	}
+	
+	public GamePanel() {
+
+		frame.add(this);
+		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		frame.setVisible(true);
+		frame.addKeyListener(this);
+		frame.setDefaultCloseOperation(3);
+		this.setBackground(Color.black);
+		timer.start();
 		
 		for(int i = 0; i < 4; i++) {
 			for(int j = 0; j < 4; j++) {
@@ -111,10 +133,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 			newTile();	
 			tileMoved = false;
 		}
+		
+		g.setFont(new Font("Arial",0 , 300));
+		g.drawString(":)", 500, 500);
+		
 
 	}
 
-	private void tryToMove(int direction) {
+	public void tryToMove(int direction) {
 
 		int r, c;
 		
@@ -127,7 +153,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 					for(c = 0; c < 4; c++) {
 						if (tiles[r][c].getValue() != 0) {
 //							moveUp(r,c);
-							moveVertical(r,c,(-1));
+//							moveVertical(r,c,-1);
+							move(r,c,"up");
 						}
 					}	
 				};
@@ -135,11 +162,14 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 			break;
 			case DOWN: 
 				
+				combineDown();
+				
 				for(r = 2; r >= 0; r--) {
 					for(c = 0; c < 4; c++) {
 						if (tiles[r][c].getValue() != 0) {
 //							moveDown(r,c);
-							moveVertical(r,c,1);
+//							moveVertical(r,c,1);
+//							move(r,c,"down");
 						}
 					}	
 				};
@@ -151,7 +181,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 					for(r = 0; r < 4; r++) {
 						if (tiles[r][c].getValue() != 0) {
 //							moveLeft(r,c);
-							moveHorizontal(r,c,-1);
+//							moveHorizontal(r,c,-1);
+							move(r,c,"left");
 						}
 					}
 				};
@@ -163,7 +194,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 					for(r = 0; r < 4; r++) {
 						if (tiles[r][c].getValue() != 0) {
 //							moveRight(r,c);
-							moveHorizontal(r,c,1);
+//							moveHorizontal(r,c,1);
+							move(r,c,"right");
 						}
 					}
 				};
@@ -171,6 +203,47 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 			break;
 		}
 
+	}
+	
+	private void move(int r, int c, String direction) {
+
+		int v = 0, h = 0;
+
+		switch (direction) {
+		case "up": v = -1;
+			break;
+		case "down": v = 1;
+			break;
+		case "left": h = -1;
+			break;
+		case "right": h = 1;
+		}
+
+		int moveRow = r;
+		int moveCol = c;
+		
+		try {
+			while (tiles[moveRow + v][moveCol + h].getValue() == 0) {
+				moveRow += v;
+				moveCol += h;
+			}
+
+			if (tiles[r][c].getValue() == tiles[moveRow + v][moveCol + h].getValue()) {
+				moveRow += v;
+				moveCol += h;
+			}
+		} catch (Exception e) {
+//			e.printStackTrace();
+		}
+
+		if (!combine(r, c, moveRow - r, moveCol - c)) {
+
+			if (moveCol != c || moveRow != r) {
+				tiles[moveRow][moveCol].setValue(tiles[r][c].getValue());
+				tiles[r][c].setValue(0);
+				tileMoved = true;
+			}
+		}
 	}
 	
 	private void moveVertical(int r, int c, int dir) {
@@ -323,22 +396,74 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		
 	}
 	
+	public void combineDown() {
+		moveDownBetter();
+		int col = 0;
+		while (col < 4) {
+			int row = 2;
+			if (combine(row, col, 1, 0)) {
+				while (tiles[row][col].getValue() == 0 && row > 0) {
+					row--;
+				}
+			} else {
+				row--;
+				combine(row, col, 1, 0);
+			}
+			
+			row--;
+			combine(row, col, 1, 0);
+			col++;
+		}
+//		System.out.println("after combine");
+		moveDownBetter();
+	}
+	
+	public void moveDownBetter() {
+		
+//		moveTest.printBoard();
+		
+		for (int col = 0; col < 4; col++) {	
+			
+			//place to move tile to
+			int endRow = 3;
+			// row of tile
+			int row = 2;
+			
+			while (row > 0) {
+				// find a tile to move
+				while (!(tiles[row][col].getValue() != 0 && tiles[row + 1][col].getValue() == 0) && row > 0) {
+					row--;
+//					System.out.println("row" + row);
+				}
+				
+				while (tiles[endRow][col].getValue() != 0 && endRow != 0) {
+					endRow--;
+//					System.out.println("endrow" + endRow);
+				}	
+				
+				if (endRow != 0 && endRow > row) {
+					tiles[endRow][col].setValue(tiles[row][col].getValue());
+					tiles[row][col].setValue(0);
+				}
+			}
+			
+//			System.out.println("leave loop");
+			
+		}
+	}
+	
 	// down is dr = 1, up is dr = -1, right is dc = 1, left is dc = -1
 	public boolean combine(int r, int c, int dr, int dc) {
-		
-		if (dr == 0 && dc == 0) {
-			return false;
-		}
-		
-		try{
-			if (tiles[r][c].getValue() == tiles[r + dr][c + dc].getValue()) {
+
+		try {
+			if (tiles[r][c].getValue() == tiles[r + dr][c + dc].getValue() && tiles[r][c].getValue() != 0) {
 				
 				tiles[r + dr][c + dc].setValue(tiles[r][c].getValue()*2);
 				tiles[r][c].setValue(0);
 				tileMoved = true;
 				return true;
-			}
-		} catch (Exception e){
+			}	
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
