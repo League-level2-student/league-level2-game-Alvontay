@@ -151,6 +151,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 			}
 		}
 		
+		
+		
 		switch(direction) {
 			case UP: combineAndMoveUp();
 				break;
@@ -211,6 +213,40 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				tileMoved = true;
 			}
 		}
+	}
+	
+	public void combineAndMoveVertical(String direction) {
+		
+		int startRow = 0, vChange = 0;
+		
+		switch (direction) {
+		case "up": vChange = -1; startRow = 3;
+			break;
+		case "down": vChange = 1; startRow = 2;
+			break;
+		}
+		
+		moveVerticalBetter(direction);
+		
+		for (int col = 0; col < 4; col++) {
+			
+			int row = startRow;
+			
+			if (combine(row, col, vChange, 0)) {
+				while (tiles[row][col].getValue() == 0 && row < 3) {
+					row++;
+				}
+			} else {
+				row++;
+				combine(row, col, vChange, 0);
+			}
+			
+			row++;
+			combine(row, col, vChange, 0);
+			
+		}
+		
+		moveVerticalBetter(direction);
 	}
 	
 	public void combineAndMoveUp() {
@@ -298,6 +334,27 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		}
 //		System.out.println("after combine");
 		moveLeftBetter();
+	}
+	
+	public void moveVerticalBetter(String direction) {
+		
+		int endRow = 0, row = 0, change = 0;
+		
+		for (int col = 0; col < 4; col++) {
+			
+			switch (direction) {
+			case "up": endRow = 0; row = 1; change = -1;
+				break;
+			case "down": endRow = 3; row = 2; change = 1;
+				break;
+			}
+			
+			while(!(tiles[row][col].getValue() != 0 && tiles[row + change][col].getValue() == 0) && row ) {
+				
+			}
+			
+		}
+		
 	}
 	
 	public void moveDownBetter() {
