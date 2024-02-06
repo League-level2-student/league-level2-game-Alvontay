@@ -10,21 +10,25 @@ public class moveTest {
 @Test
 	public void test() {
 	
-		testObj.tiles[0][0].value = 0; 
-		testObj.tiles[1][0].value = 2; 
-		testObj.tiles[2][0].value = 4; 
-		testObj.tiles[3][0].value = 8;
+		testObj.tiles[0][0].value = 2; 
+		testObj.tiles[1][0].value = 4; 
+		testObj.tiles[2][0].value = 2; 
+		testObj.tiles[3][0].value = 2;
 	
 		printBoard();
 		System.out.println();
 		
 //		testObj.combineAndMoveUp();
 		
-		testObj.combineAndMoveDown();
+//		testObj.combineAndMoveDown();
 		
 //		testObj.combineAndMoveRight();
 		
 //		testObj.combineAndMoveLeft();
+		
+		testObj.combineAndMoveVertical("up");
+		
+//		testObj.combineAndMoveVertical("down");
 		
 		printBoard();
 

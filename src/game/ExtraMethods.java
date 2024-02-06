@@ -1,14 +1,151 @@
 package game;
 
 public class ExtraMethods {
+	
+//	private void move(int r, int c, String direction) {
+//
+//		int vChange = 0, h = 0;
+//
+//		switch (direction) {
+//		case "up": vChange = -1;
+//			break;
+//		case "down": vChange = 1;
+//			break;
+//		case "left": h = -1;
+//			break;
+//		case "right": h = 1;
+//		}
+//
+//		int moveRow = r;
+//		int moveCol = c;
+//		
+//		try {
+//			while (tiles[moveRow + vChange][moveCol + h].getValue() == 0) {
+//				moveRow += vChange;
+//				moveCol += h;
+//			}
+//
+//			if (tiles[r][c].getValue() == tiles[moveRow + vChange][moveCol + h].getValue()) {
+//				moveRow += vChange;
+//				moveCol += h;
+//			}
+//		} catch (Exception e) {
+////			e.printStackTrace();
+//		}
+//
+//		if (!combine(r, c, moveRow - r, moveCol - c)) {
+//
+//			if (moveCol != c || moveRow != r) {
+//				tiles[moveRow][moveCol].setValue(tiles[r][c].getValue());
+//				tiles[r][c].setValue(0);
+//				tileMoved = true;
+//			}
+//		}
+//	}
 
-	
-
-	
-	
-	
-	
-	
+//	public void combineAndMoveUp() {
+//		moveUpBetter();
+//		int col = 0;
+//		while (col < 4) {
+//			int row = 1;
+//			if (combine(row, col, -1, 0)) {
+//				while (tiles[row][col].getValue() == 0 && row < 3) {
+//					row++;
+//				}
+//			} else {
+//				row++;
+//				combine(row, col, -1, 0);
+//			}
+//			
+//			row++;
+//			combine(row, col, -1, 0);
+//			col++;
+//		}
+////		System.out.println("after combine");
+//		moveUpBetter();
+//	}
+//
+//	public void combineAndMoveDown() {
+//		// shift everything down
+//		moveDownBetter();
+//		int col = 0;
+//		while (col < 4) {
+//			int row = 2;
+//			
+//			if (combine(row, col, 1, 0)) {
+//				while (tiles[row][col].getValue() == 0 && row > 0) {
+//					row--;
+//				}
+//			} else {
+//				row--;
+//				combine(row, col, 1, 0);
+//			}
+//			
+//			row--;
+//			combine(row, col, 1, 0);
+//			col++;
+//		}
+////		System.out.println("after combine");
+//		moveDownBetter();
+//	}
+//
+//	private void moveUpBetter() {
+//		
+//		for (int col = 0; col < 4; col++) {	
+//			
+//			//place to move tile to
+//			int endRow = 0;
+//			// row of tile
+//			int row = 1;
+//			
+//			while (row < 3) {
+//				// find a tile to move
+//				while (!(tiles[row][col].getValue() != 0 && tiles[row - 1][col].getValue() == 0) && row < 3) {
+//					row++;
+//				}
+//				
+//				while (tiles[endRow][col].getValue() != 0 && endRow != 3) {
+//					endRow++;
+//				}	
+//				
+//				if (endRow != 3 && endRow < row) {
+//					tiles[endRow][col].setValue(tiles[row][col].getValue());
+//					tiles[row][col].setValue(0);
+//				}
+//			}
+//		}
+//		
+//	}
+//	
+//	public void moveDownBetter() {
+//		
+//		for (int col = 0; col < 4; col++) {
+//			
+//			//place to move tile to
+//			int endRow = 3;
+//			// row of tile
+//			int row = 2;
+//			
+//			while (row > 0) {
+//				// find a tile to move
+//				while (!(tiles[row][col].getValue() != 0 && tiles[row + 1][col].getValue() == 0) && row > 0) {
+//					row--;
+//				}
+//				
+//				while (tiles[endRow][col].getValue() != 0 && endRow != 0) {
+//					endRow--;
+//				}	
+//				
+//				if (endRow != 0 && endRow > row) {
+//					tiles[endRow][col].setValue(tiles[row][col].getValue());
+//					tiles[row][col].setValue(0);
+//				}
+//				
+//			}
+//		}
+//	}
+//	
+//	
 //	private void moveVertical(int r, int c, int dir) {
 //		
 //		int moveRow = r;

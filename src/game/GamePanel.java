@@ -84,7 +84,8 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 	private void newTile() {
 		if (anyEmpty()) {
 			empty = findEmptyTile();
-			tiles[empty[0]][empty[1]].setValue(generateStartingValue());			
+			tiles[empty[0]][empty[1]].setValue(generateStartingValue());
+			printBoard();
 		}
 	}
 	
@@ -154,9 +155,9 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		
 		
 		switch(direction) {
-			case UP: combineAndMoveUp();
+			case UP: combineAndMoveVertical("up");
 				break;
-			case DOWN: combineAndMoveDown();
+			case DOWN: combineAndMoveVertical("down");
 				break;
 			case LEFT: 	combineAndMoveLeft();
 				break;
@@ -174,123 +175,54 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		
 	}
 	
-	private void move(int r, int c, String direction) {
-
-		int vChange = 0, h = 0;
-
-		switch (direction) {
-		case "up": vChange = -1;
-			break;
-		case "down": vChange = 1;
-			break;
-		case "left": h = -1;
-			break;
-		case "right": h = 1;
-		}
-
-		int moveRow = r;
-		int moveCol = c;
-		
-		try {
-			while (tiles[moveRow + vChange][moveCol + h].getValue() == 0) {
-				moveRow += vChange;
-				moveCol += h;
-			}
-
-			if (tiles[r][c].getValue() == tiles[moveRow + vChange][moveCol + h].getValue()) {
-				moveRow += vChange;
-				moveCol += h;
-			}
-		} catch (Exception e) {
-//			e.printStackTrace();
-		}
-
-		if (!combine(r, c, moveRow - r, moveCol - c)) {
-
-			if (moveCol != c || moveRow != r) {
-				tiles[moveRow][moveCol].setValue(tiles[r][c].getValue());
-				tiles[r][c].setValue(0);
-				tileMoved = true;
-			}
-		}
-	}
-	
 	public void combineAndMoveVertical(String direction) {
 		
 		int startRow = 0, vChange = 0;
 		
 		switch (direction) {
-		case "up": vChange = -1; startRow = 3;
+		case "up": vChange = -1; startRow = 1;
 			break;
 		case "down": vChange = 1; startRow = 2;
 			break;
 		}
 		
-		moveVerticalBetter(direction);
+		// Shift everything (direction)
+		moveVertical(direction);
+//		System.out.println("First Shift");
 		
+		// For each collumn
 		for (int col = 0; col < 4; col++) {
 			
 			int row = startRow;
 			
+			// try to combine first 2 tiles from (direction), if cant, try the two vertically adjacent
 			if (combine(row, col, vChange, 0)) {
-				while (tiles[row][col].getValue() == 0 && row < 3) {
-					row++;
+				
+				// Find next tile to 
+				if (direction.equals("up")) {
+					while (tiles[row][col].getValue() == 0 && row < 3) {
+						row++;
+					}
+				} else {
+					while (tiles[row][col].getValue() == 0 && row > 0) {
+						row--;
+					}
 				}
+				
 			} else {
-				row++;
+				row -= vChange;
 				combine(row, col, vChange, 0);
 			}
 			
-			row++;
+			// try to combine last pair of tiles
+			row -= vChange;
 			combine(row, col, vChange, 0);
 			
 		}
 		
-		moveVerticalBetter(direction);
-	}
-	
-	public void combineAndMoveUp() {
-		moveUpBetter();
-		int col = 0;
-		while (col < 4) {
-			int row = 1;
-			if (combine(row, col, -1, 0)) {
-				while (tiles[row][col].getValue() == 0 && row < 3) {
-					row++;
-				}
-			} else {
-				row++;
-				combine(row, col, -1, 0);
-			}
-			
-			row++;
-			combine(row, col, -1, 0);
-			col++;
-		}
-//		System.out.println("after combine");
-		moveUpBetter();
-	}
-
-	public void combineAndMoveDown() {
-		moveDownBetter();
-		int col = 0;
-		while (col < 4) {
-			int row = 2;
-			if (combine(row, col, 1, 0)) {
-				while (tiles[row][col].getValue() == 0 && row > 0) {
-					row--;
-				}
-			} else {
-				row--;
-				combine(row, col, 1, 0);
-			}
-			
-			row--;
-			combine(row, col, 1, 0);
-			col++;
-		}
-//		System.out.println("after combine");
-		moveDownBetter();
+		// Shift everything (direction)
+		moveVertical(direction);
+//		System.out.println("Second Shift");
 	}
 	
 	public void combineAndMoveRight() {
@@ -336,7 +268,7 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		moveLeftBetter();
 	}
 	
-	public void moveVerticalBetter(String direction) {
+	public void moveVertical(String direction) {
 		
 		int endRow = 0, row = 0, change = 0;
 		
@@ -349,69 +281,27 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 				break;
 			}
 			
-			while(!(tiles[row][col].getValue() != 0 && tiles[row + change][col].getValue() == 0) && row ) {
+			while (direction.equals("up")? row < 3: row > 0) {
 				
-			}
-			
-		}
-		
-	}
-	
-	public void moveDownBetter() {
-				
-		for (int col = 0; col < 4; col++) {
-			
-			//place to move tile to
-			int endRow = 3;
-			// row of tile
-			int row = 2;
-			
-			while (row > 0) {
-				// find a tile to move
-				while (!(tiles[row][col].getValue() != 0 && tiles[row + 1][col].getValue() == 0) && row > 0) {
-					row--;
+				while(!(tiles[row][col].getValue() != 0 && tiles[row + change][col].getValue() == 0) && (direction.equals("up")? row < 3: row > 0)) {
+					row -= change;
 				}
 				
-				while (tiles[endRow][col].getValue() != 0 && endRow != 0) {
-					endRow--;
-				}	
-				
-				if (endRow != 0 && endRow > row) {
+				while ((tiles[endRow][col].getValue() != 0) && (direction.equals("down")? endRow != 0: endRow != 3)) {
+					endRow -= change;
+				}
+
+				if ((direction.equals("down")? endRow != 0: endRow != 3) && (direction.equals("down")? endRow > row: endRow < row)) {
 					tiles[endRow][col].setValue(tiles[row][col].getValue());
 					tiles[row][col].setValue(0);
 				}
-			}
-		}
-	}
-	
-	private void moveUpBetter() {
-		
-		for (int col = 0; col < 4; col++) {	
-			
-			//place to move tile to
-			int endRow = 0;
-			// row of tile
-			int row = 1;
-			
-			while (row < 3) {
-				// find a tile to move
-				while (!(tiles[row][col].getValue() != 0 && tiles[row - 1][col].getValue() == 0) && row < 3) {
-					row++;
-				}
 				
-				while (tiles[endRow][col].getValue() != 0 && endRow != 3) {
-					endRow++;
-				}	
-				
-				if (endRow != 3 && endRow < row) {
-					tiles[endRow][col].setValue(tiles[row][col].getValue());
-					tiles[row][col].setValue(0);
-				}
 			}
+			
 		}
 		
 	}
-	
+
 	private void moveRightBetter() {
 		
 		for (int row = 0; row < 4; row++) {
@@ -470,8 +360,12 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 	
 	// down is dr = 1, up is dr = -1, right is dc = 1, left is dc = -1
 	public boolean combine(int r, int c, int dr, int dc) {
+		
+		
 
 		try {
+//			System.out.println("Combined: " + (tiles[r][c].getValue() == tiles[r + dr][c + dc].getValue() && tiles[r][c].getValue() != 0));
+			
 			if (tiles[r][c].getValue() == tiles[r + dr][c + dc].getValue() && tiles[r][c].getValue() != 0) {
 				
 				tiles[r + dr][c + dc].setValue(tiles[r][c].getValue()*2);
@@ -485,6 +379,19 @@ public class GamePanel extends JPanel implements KeyListener, ActionListener {
 		
 		return false;
 
+	}
+	
+	public void printBoard() {	
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+				if (j == 3) {
+					System.out.print(tiles[i][j].value + " \n");
+				} else {
+					System.out.print(tiles[i][j].value + " ");
+				}
+			}
+		}
+		System.out.println("\n");
 	}
 	
 	public void keyTyped(KeyEvent e) {
