@@ -2,6 +2,105 @@ package game;
 
 public class ExtraMethods {
 	
+//	public void combineAndMoveRight() {
+//		moveRightBetter();
+//		int row = 0;
+//		while (row < 4) {
+//			int col = 2;
+//			if (combine(row, col, 0, 1)) {
+//				while (tiles[row][col].getValue() == 0 && col > 0) {
+//					col--;
+//				}
+//			} else {
+//				col--;
+//				combine(row, col, 0, 1);
+//			}
+//			
+//			col--;
+//			combine(row, col, 0, 1);
+//			row++;
+//		}
+//		moveRightBetter();
+//	}
+//	
+//	public void combineAndMoveLeft() { 
+//		moveLeftBetter();
+//		int row = 0;
+//		while (row < 4) {
+//			int col = 1;
+//			if (combine(row, col, 0, -1)) {
+//				while (tiles[row][col].getValue() == 0 && col < 3) {
+//					col++;
+//				}
+//			} else {
+//				col++;
+//				combine(row, col, 0, -1);
+//			}
+//			
+//			col++;
+//			combine(row, col, 0, -1);
+//			row++;
+//		}
+////		System.out.println("after combine");
+//		moveLeftBetter();
+//	}
+	
+//	private void moveLeftBetter() {
+//		
+//		for (int row = 0; row < 4; row++) {	
+//			
+//			//place to move tile to
+//			int endCol = 0;
+//			// row of tile
+//			int col = 1;
+//			
+//			while (col < 3) {
+//				// find a tile to move
+//				while (!(tiles[row][col].getValue() != 0 && tiles[row][col - 1].getValue() == 0) && col < 3) {
+//					col++;
+//				}
+//				
+//				while (tiles[row][endCol].getValue() != 0 && endCol != 3) {
+//					endCol++;
+//				}	
+//				
+//				if (endCol != 3 && endCol < col) {
+//					tiles[row][endCol].setValue(tiles[row][col].getValue());
+//					tiles[row][col].setValue(0);
+//				}
+//			}
+//		}
+//		
+//	}
+	
+//	private void moveRightBetter() {
+//		
+//		for (int row = 0; row < 4; row++) {
+//			
+//			//place to move tile to
+//			int endCol = 3;
+//			// row of tile
+//			int col = 2;
+//			
+//			while (col > 0) {
+//				// find a tile to move
+//				while (!(tiles[row][col].getValue() != 0 && tiles[row][col + 1].getValue() == 0) && col > 0) {
+//					col--;
+//				}
+//				
+//				while (tiles[row][endCol].getValue() != 0 && endCol != 0) {
+//					endCol--;
+//				}	
+//				
+//				if (endCol != 0 && endCol > col) {
+//					tiles[row][endCol].setValue(tiles[row][col].getValue());
+//					tiles[row][col].setValue(0);
+//				}
+//			}
+//		}
+//		
+//	}
+	
 //	private void move(int r, int c, String direction) {
 //
 //		int vChange = 0, h = 0;
